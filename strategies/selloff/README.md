@@ -114,33 +114,61 @@ pairs trades by default.
 
 ## Backtest
 
-`algo-trading backtest selloff --start 2024-10-09 --end 2026-10-09` on the
-default universe and parameters, $100,000, Yahoo daily bars:
+`algo-trading backtest selloff` on the default universe and parameters,
+$100,000, Yahoo daily bars. The two-year run is the period live trading
+would have started from; the 18-year run is the one to judge the strategy by.
 
-| | |
-|---|---|
-| Total return / CAGR | +17.6% / 8.5% |
-| Max drawdown | 5.9% |
-| Sharpe | 0.40 |
-| Trades (round trips) | 47, none open at the end |
-| Win rate | 77% (average win +8.7%, average loss −5.5%) |
-| Average hold | 2.4 sessions from entry day to exit day (10 one-session, 9 two, 28 three) |
-| Limit bids filled | 47 of 282 (17%), on 156 of 501 sessions with a bid |
-| Stops triggered | none; every exit was a market sell at the next open |
+| | 2008-01-01 → 2026-10-09 | 2024-10-09 → 2026-10-09 |
+|---|---|---|
+| Total return / CAGR | +54.3% / 2.3% | +17.6% / 8.5% |
+| Max drawdown | 9.3% | 5.9% |
+| Sharpe (LumiBot, vs T-bills) | −0.26 | 0.40 |
+| SPY price return, same period | +434% (max drawdown 53%) | +34% |
+| Trades (round trips) | 193 | 47 |
+| Win rate | 69% (average win +7.8%, average loss −7.9%) | 77% (+8.7% / −5.5%) |
+| Average hold | 2.3 sessions | 2.4 sessions |
+| Limit bids filled | 193 of 1,097 (18%) | 47 of 282 (17%) |
+| Share of equity invested | 0.7% on average; any position on 6% of sessions | 1.6%; 11% of sessions |
+| Stops triggered | 3, each a gap through the stop at the open | none |
 
-Read it with care:
+What the long run shows:
 
-- **Small sample.** 47 trades, half of them in two clusters: the
-  February–April 2025 selloff and semiconductors in June–July 2026. Five
-  July 2026 chip trades made 46% of the profit.
-- **Mostly in cash.** Positions averaged $7,300 and held for 112
-  position-sessions in total over 501 sessions, so the return is on capital
-  that sat idle most of the time; a 5.9% drawdown says more about low exposure
-  than about a safe strategy.
-- **Survivorship bias** in the universe (above) flatters every number here.
-- **Fills are optimistic.** The backtest fills a bid whenever the day's low
-  reaches it, at the limit (or the open, if it opened lower). Live, a bid at
-  the low of a panic day often goes unfilled, and the opening auction after a
-  gap is not always available at the printed open.
+- **The last two years were the best stretch, not a typical one.** Most years
+  returned −1% to +3%, and 2014–2017 lost money four years running. The
+  whole result rests on 2021 (+16.3%), 2025 (+5.8%) and 2026 (+10.2%).
+- **It rarely trades.** About ten trades a year, with long droughts (one trade
+  in each of 2012 and 2013). In 2008 only 80 of the universe's 141 symbols
+  traded at all, and large caps seldom fall 12.5% in three days.
+- **The stop does not cap the worst losses.** All three stops filled on a gap
+  far below them: RUN and ENPH in March 2020 (−32%, −35%), UPST in August 2023
+  (−30%). Average wins and losses are the same size, so the strategy lives on
+  its win rate.
+- **Fill optimism is small.** 182 of the 193 fills (94%) either opened below
+  the bid or traded at least 0.5% through it, so they did not depend on the
+  low merely touching the limit. Dropping the other 11 cuts the profit from
+  $54k to $45k, because those 11 happened to be big winners.
+- **Volatility regime (Nagel 2012).** Reversal profits are said to grow with
+  market stress. By the VIX close before entry:
+
+  | VIX | Trades | Win rate | Average return | Worst |
+  |---|---|---|---|---|
+  | < 15 | 18 | 56% | +0.5% | −13.6% |
+  | 15–20 | 63 | 67% | +2.3% | −30.5% |
+  | 20–30 | 66 | 86% | +5.6% | −7.4% |
+  | 30 + | 46 | 54% | +1.2% | −35.0% |
+
+  The 20–30 band was the best in both halves of the period (2008–2016: 15
+  trades, 80% wins; 2017–2026: 51 trades, 88%), but the effect is not the
+  monotonic one the paper predicts: panics above 30 were mediocre and held the
+  worst losses. VIX ≥ 20 against below 20 differs by +1.9 points of average
+  return with t = 1.30, which is not significant. The band was chosen after
+  looking at four buckets, so it is a hypothesis to watch in paper trading,
+  not a rule.
+
+Read every number with care:
+
+- **Survivorship bias** in the universe (above) flatters all of them.
+- **Fills at the printed open.** Exits and gap fills assume the open was
+  available; after a gap the opening auction can be worse.
 - No commissions or slippage are charged. Alpaca charges no commission on
   stocks.
