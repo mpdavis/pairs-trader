@@ -1,0 +1,33 @@
+# The default universe: liquid US large and mid caps, weighted toward the
+# volatile names that can pass the 5% ATR filter. Override it with
+# SELLOFF_UNIVERSE (comma-separated).
+#
+# Survivorship bias: this is today's list of names that are still large and
+# liquid. A backtest over it never meets the stocks that sold off and kept
+# falling until they were delisted, so it flatters a strategy that buys
+# selloffs. Treat backtest results as an upper bound.
+#
+# Never list a symbol another strategy trades: `algo-trading live` refuses to
+# start when two strategies share one (pairs trades JBHT, KNX, UPS, ODFL).
+
+# Semiconductors
+NVDA, AMD, AVGO, MU, INTC, QCOM, MRVL, ON, LRCX, AMAT, KLAC, SMCI, ARM, MPWR, TER, ENPH, FSLR
+
+# Software and internet
+TSLA, META, AMZN, NFLX, PLTR, SNOW, CRWD, NET, DDOG, MDB, ZS, OKTA, SHOP, XYZ, PYPL, COIN, HOOD, AFRM
+UPST, SOFI, ROKU, U, RBLX, DKNG, PINS, SNAP, UBER, LYFT, DASH, ABNB, ETSY, CHWY, W, TWLO, DOCU, ZM
+PATH, AI, IONQ, APP, TTD, HUBS, ESTC
+
+# Consumer and retail
+NKE, LULU, DECK, CROX, ELF, CELH, CMG, SBUX, TGT, DG, DLTR, BBY, ULTA, RH, WSM, CVNA, CCL, RCL, NCLH
+AAL, UAL, DAL, LUV, F, GM, RIVN, LCID, NIO
+
+# Health care
+MRNA, BNTX, VRTX, REGN, BIIB, ILMN, DXCM, ISRG, PODD, NVAX, CRSP, BMRN, ALNY, INCY, HUM, CNC
+MOH, ELV, UNH
+
+# Energy and materials
+XOM, OXY, DVN, APA, FANG, HAL, SLB, CLF, AA, FCX, NEM, MP, ALB, LAC, CF, MOS
+
+# Financials and industrials
+SCHW, MS, GS, KEY, ZION, WAL, ALLY, BA, CAT, DE, GE, URI, PLUG, RUN, BLDR, TOL, LEN, DHI

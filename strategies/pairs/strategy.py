@@ -73,6 +73,10 @@ class PairsStrategy(ManagedStrategy):
         "pair_gross": 0.5,
     }
 
+    @classmethod
+    def symbols(cls, parameters: dict) -> set[str]:
+        return {s for p in parse_pairs(parameters["pairs"]) for s in (p.y, p.x)}
+
     def initialize(self) -> None:
         # Backtests step one day at a time. Live polls instead of using "1D":
         # LumiBot schedules a daily strategy started mid-session at the start

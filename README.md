@@ -11,6 +11,7 @@ Each directory under `strategies/` is one strategy, named by the directory.
 | Strategy | What it does |
 |---|---|
 | [`pairs`](strategies/pairs/README.md) | Market-neutral pairs trading: long the cheap stock, short the rich one, close both when the spread reverts |
+| [`selloff`](strategies/selloff/README.md) | Long mean reversion: bid 7% under stocks in an uptrend that just fell 12.5% in three days, sell on a 4% gain, a stop, or after three days |
 
 `algo-trading list` prints what is installed.
 
@@ -30,7 +31,9 @@ Every entry in the strategy's `parameters` can be overridden by an environment
 variable named `<NAME>_<PARAMETER>`, for example `PAIRS_ENTRY_Z=2.5`.
 
 Strategies share one Alpaca account, so two of them must never trade the same
-symbol.
+symbol. A strategy declares the symbols it may trade by overriding
+`ManagedStrategy.symbols(parameters)`; `algo-trading live` refuses to start
+when two strategies' symbols overlap.
 
 ## Commands
 

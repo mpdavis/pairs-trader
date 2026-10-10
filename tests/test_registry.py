@@ -6,8 +6,9 @@ import pytest
 from algo_trading.__main__ import cmd_healthcheck
 from algo_trading.base import ManagedStrategy
 from algo_trading.heartbeat import heartbeat
-from algo_trading.registry import Entry, discover, parameters_from_env, select
+from algo_trading.registry import Entry, check_disjoint, discover, parameters_from_env, select
 from strategies.pairs import PairsStrategy
+from strategies.selloff import SelloffStrategy
 
 
 def test_discovers_pairs():
@@ -15,6 +16,25 @@ def test_discovers_pairs():
     assert entries["pairs"].strategy is PairsStrategy
     assert entries["pairs"].status is not None
     assert entries["pairs"].summary.startswith("Market-neutral pairs trading")
+
+
+def test_discovers_selloff():
+    entry = discover()["selloff"]
+    assert entry.strategy is SelloffStrategy
+    assert entry.status is not None
+    assert entry.summary.startswith("Long mean reversion after a selloff")
+
+
+def test_installed_strategies_trade_disjoint_symbols_by_default():
+    check_disjoint(list(discover().values()), {})
+
+
+def test_overlapping_symbols_refuse_to_start():
+    entries = list(discover().values())
+    with pytest.raises(SystemExit, match=r"KNX \(pairs, selloff\)"):
+        check_disjoint(entries, {"SELLOFF_UNIVERSE": "NVDA,KNX"})
+    with pytest.raises(SystemExit, match=r"NVDA \(pairs, selloff\)"):
+        check_disjoint(entries, {"PAIRS_PAIRS": "NVDA/AMD"})
 
 
 def test_select_defaults_to_everything_and_rejects_unknown_names():

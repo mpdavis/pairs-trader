@@ -51,10 +51,12 @@ def cmd_live(names: list[str]) -> None:
     from lumibot.traders import Trader
 
     from .heartbeat import heartbeat
-    from .registry import discover, parameters_from_env, select
+    from .registry import check_disjoint, discover, parameters_from_env, select
 
     key, secret, paper = alpaca_credentials()
-    entries = select(discover(), wanted(names))
+    available = discover()
+    check_disjoint(list(available.values()), os.environ)
+    entries = select(available, wanted(names))
     broker = Alpaca({"API_KEY": key, "API_SECRET": secret, "PAPER": paper})
     show_strategy_logs()
     trader = Trader()

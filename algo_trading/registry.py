@@ -67,3 +67,18 @@ def parameters_from_env(entry: Entry, environ: Mapping[str, str]) -> dict:
         else:
             params[key] = raw
     return params
+
+
+def check_disjoint(entries: list[Entry], environ: Mapping[str, str]) -> None:
+    """Exit unless no two strategies may trade the same symbol, each judged on
+    the parameters it would run with. Every strategy counts, not only the ones
+    being started: another container may be running the rest on this account."""
+    claimed: dict[str, str] = {}
+    clashes = []
+    for entry in entries:
+        for symbol in sorted(entry.strategy.symbols(parameters_from_env(entry, environ))):
+            if symbol in claimed:
+                clashes.append(f"{symbol} ({claimed[symbol]}, {entry.name})")
+            claimed.setdefault(symbol, entry.name)
+    if clashes:
+        raise SystemExit(f"strategies share symbols, which would trade one position twice: {', '.join(clashes)}")

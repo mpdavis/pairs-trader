@@ -33,6 +33,12 @@ class ManagedStrategy(Strategy):
 
     parameters: dict = {"data_dir": None}
 
+    @classmethod
+    def symbols(cls, parameters: dict) -> set[str]:
+        """The symbols this strategy may trade under `parameters`. Strategies
+        share one account, so `live` refuses to start when two overlap."""
+        return set()
+
     @property
     def data_dir(self) -> Path:
         if not hasattr(self, "_data_dir"):

@@ -26,6 +26,7 @@ include = ["algo_trading*", "strategies*"]
 
 [tool.setuptools.package-data]
 algo_trading = ["templates/*.html"]
+strategies = ["*/*.txt"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
